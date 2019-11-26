@@ -21,7 +21,13 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @{
+                WorkWithExcel.Open();
+
+            }
+
             @RenderBody()
+
         </main>
     </div>
 

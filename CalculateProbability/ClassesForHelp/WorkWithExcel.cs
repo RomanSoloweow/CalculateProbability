@@ -10,11 +10,11 @@ namespace CalculateProbability
     {
         public static void Open()
         {
-            //using (var stream = File.Open(""))
-            //{
+            using (var stream = File.Open(@"Книга1.csv",FileMode.OpenOrCreate))
+            {
 
-            //}
+            }
         }
-       
+
     }
 }
