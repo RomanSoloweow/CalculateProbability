@@ -14,7 +14,7 @@
                         </div>
                     </div>
                     <select class="form-control" id="ParameterSelect">
-                        <option/>
+                        <option />
                         @foreach (var parameter in parametersForSelect)
                         {
                             <option>@parameter</option>
@@ -22,17 +22,28 @@
                     </select>
                 </div>
             </div>
-
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">От</span>
+                    </div>
+                    <input type="number" class="form-control">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">До</span>
+                    </div>
+                    <input type="number" class="form-control">
+                </div>
+            </div>
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Количество точек</span>
                     </div>
-                    <input type="text" class="form-control">
+                    <input type="number" class="form-control">
                 </div>
             </div>
             @{
-               
+
                 foreach (var parameter in parameters)
                 {
                     <div class="form-group">
@@ -40,11 +51,11 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">@parameter</span>
                             </div>
-                            <input type="text" class="form-control">
+                            <input type="number" class="form-control">
                         </div>
                     </div>
                 }
             }
-            </div>
+        </div>
         </div>
 </div>
