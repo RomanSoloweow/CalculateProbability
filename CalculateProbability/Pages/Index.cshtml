@@ -5,7 +5,16 @@
 }
 
     <div class="text-center">
-        <h1 class="display-4">Здесь будут графики</h1>
-        <h1 class="display-4">Или нет</h1>
-        <button type="button" class="btn btn-dark">Тестовая кнопка</button>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#CollapsParameters" aria-expanded="false" aria-controls="CollapsParameters">Параметры</button>
+            <button type="button" class="btn btn-primary">Отобразить график</button>
+            <button type="button" class="btn btn-primary">Загрузить</button>
+            <button type="button" class="btn btn-primary">Сохранить</button>
+        </div>
     </div>
+
+
+@section Parameters
+{
+    <partial name="Parameters.cshtml" />
+}
