@@ -4,10 +4,16 @@
     ViewData["Title"] = "Home page";
 }
 
-    <div class="text-center">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-secondary">Параметры</button>
-            <button type="button" class="btn btn-secondary">Сохранить</button>
-            <button type="button" class="btn btn-secondary">Загрузить</button>
-        </div>
+<div class="text-center">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Параметры</button>
+        <button type="button" class="btn btn-primary">Сохранить</button>
+        <button type="button" class="btn btn-primary">Загрузить</button>
     </div>
+</div>
+
+
+@section Parameters
+{
+    <partial name="Parameters.cshtml" />
+}
