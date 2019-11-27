@@ -11,14 +11,15 @@
 		]);
 
 		var options = {
-			title: 'График',
-			hAxis: {
-				title: 'Year', titleTextStyle: { color: '#333' },
-				slantedText: true, slantedTextAngle: 80
+            title: 'График',
+            pointSize: 5,
+            hAxis:
+            {
+				title: 'Year'
 			},
-			vAxis: {
-				title: "Month",
-				minValue: 0
+            vAxis:
+            {
+				title: "Month"
 			},
 			explorer: {
 				actions: ['dragToZoom', 'rightClickToReset'],
@@ -26,12 +27,16 @@
 				keepInBounds: true,
 				maxZoomIn: 4.0
 			},
-			colors: ['#D44E41'],
+            colors: ['#1b6ec2'],
 			width: $(window).width(),
 			height: $(window).height() * 0.7
 		};
 
-		var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+        var chart = new google.visualization.AreaChart(document.getElementById('map_canvas'));
 		chart.draw(data, options);
 	}
 }
+
+//$(window).resize(function () {
+//    showChart2();
+//});
