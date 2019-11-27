@@ -25,9 +25,35 @@
 
 function GetData()
 {
-    var Data =
-    {
-        параметр: "Значение"
-    };
-    var Result = Post("GetData", Data);
+	let Data =
+	{
+		paramName: $("#paramName option:selected").text(),
+		from: $("#from").val(),
+		to: $("#to").val(),
+		countDote: $("#from").val(),
+		Tn: $("#Tn").val(),
+		T0: $("#T0").val(),
+		S: $("#S").val(),
+		F: $("#F").val(),
+		Fv: $("#Fv").val(),
+		Eps: $("#Eps").val()
+	};
+	var Result = Post("GetData", Data);
+	Result.Data.unshift(Result.Names);
+	resData = Result.Data;
+	showChart2(resData);
+	
+	resDataObj = [];
+	resData.forEach(function (item) {
+		tempObj = { x: item[0], y: item[1]};
+		resDataObj.push(item)
+	});
+
+	localStorage.data = JSON.stringify(resDataObj);
+
 }
+
+$(window).resize(function () {
+	let data = JSON.parse(localStorage.data);
+	showChart2(data);
+});
