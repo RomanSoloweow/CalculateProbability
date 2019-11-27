@@ -1,25 +1,21 @@
-﻿function showChart2() {
+﻿function showChart2(dataArr) {
+
 	google.charts.load('current', { 'packages': ['corechart'] });
 	google.charts.setOnLoadCallback(drawChart);
 	function drawChart() {
-		var data = google.visualization.arrayToDataTable([
-			['Year', 'Sales'],
-			[1, 1],
-			[2, 2],
-			[3, 4],
-			[4, 2]
-		]);
+		var data = google.visualization.arrayToDataTable(
+			dataArr
+		);
 
 		var options = {
-            title: 'График',
-            pointSize: 5,
-            hAxis:
-            {
-				title: 'Year'
+			title: 'График',
+			hAxis: {
+				title: dataArr[0][0], titleTextStyle: { color: '#333' },
+				slantedText: true, slantedTextAngle: 80
 			},
-            vAxis:
-            {
-				title: "Month"
+			vAxis: {
+				title: "Значение",
+				minValue: 0
 			},
 			explorer: {
 				actions: ['dragToZoom', 'rightClickToReset'],
