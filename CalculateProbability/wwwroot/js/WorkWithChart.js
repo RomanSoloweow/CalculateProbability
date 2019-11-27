@@ -27,8 +27,8 @@
 				maxZoomIn: 4.0
 			},
 			colors: ['#D44E41'],
-			width: $(window).width() * 0.8,
-			height: $(window).height() * 0.8
+			width: $(window).width(),
+			height: $(window).height() * 0.7
 		};
 
 		var chart = new google.visualization.LineChart(document.getElementById('canvas'));
