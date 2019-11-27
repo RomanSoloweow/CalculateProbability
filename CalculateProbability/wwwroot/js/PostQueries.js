@@ -1,8 +1,10 @@
-﻿function Post(Handler, Data, FunctionOnSuccess, FunctionOnFailure)
+﻿function Post(Handler, Data)
 {
+    var result;
     $.ajax({
         type: "Post",
         url: "?handler=" + Handler,
+        async: false,
         data: Data,
         headers:
         {
@@ -11,13 +13,21 @@
         dataType: "json",
         success: function (response)
         {
-            FunctionOnSuccess(response);
+            result =  response;
         },
         failure: function (response)
         {
-            if (FunctionOnFailure)
-                FunctionOnFailure(response);
+            return response;
         }
     });
+    return JSON.parse(result);
+}
 
+function GetData()
+{
+    var Data =
+    {
+        параметр: "Значение"
+    };
+    var Result = Post("GetData", Data);
 }

@@ -23,5 +23,11 @@ namespace CalculateProbability.Pages
         {
 
         }
+        public ActionResult OnPostGetData(string ParametrName,double From, double To, double CountDote, double Tn,double T0, double S, double F, double Fv, double Eps )
+        {
+
+
+            return new JsonResult("Test");
+        }
     }
 }
