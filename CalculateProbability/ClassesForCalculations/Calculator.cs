@@ -56,19 +56,24 @@ namespace CalculateProbability
             "P(tn, to) = " + CurrentP.ToString() + ";\n";
             return text;
         }
-        public void CancelCalculation()
+        public void StopCalculation()
         {
-            if (cancelTokenSource != null)
+            if ((IsRuning) && (cancelTokenSource != null))
                 cancelTokenSource.Cancel();
         }
-        private void StopCalculation()
+        private void StopingCalculation()
         {
             IsRuning = false;
             cancelTokenSource.Cancel();
             if (OnProgress != null)
                 OnProgress("Reset", 0);
         }
-        public void RunCalculation()
+        private void Progress(string str, int i)
+        {
+            if (OnProgress != null)
+                OnProgress(str, i);
+        }
+        public double RunCalculation()
         {
             try
             {
@@ -86,23 +91,21 @@ namespace CalculateProbability
                         {
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
+                                StopingCalculation();
                                 return;
                             }
                             ConvolutionP(i);
-                            if (OnProgress != null)
-                                OnProgress("Iteration", i);
+                            Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
+                                StopingCalculation();
                                 return;
                             }
                             ConvolutionFv(i);
-                            if (OnProgress != null)
-                                OnProgress("Iteration", i);
+                            Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
+                                StopingCalculation();
                                 return;
                             }
                         }
@@ -114,8 +117,7 @@ namespace CalculateProbability
                         r = Math.Abs(CurrentP - result) / Math.Abs(result);
                         N *= 2;
                         CurrentP = result;
-                        if (OnProgress != null)
-                            OnProgress("Reset", 0);
+                        Progress("Reset", 0);
                     } while (r > EPS && N < N_MAX);
                     if (OnCalculation != null)
                         OnCalculation(CurrentP);
@@ -129,6 +131,7 @@ namespace CalculateProbability
                 if (OnError != null)
                     OnError(ex.Message);
             }
+            return CurrentP;
         }
         private void Prepare()
         {
