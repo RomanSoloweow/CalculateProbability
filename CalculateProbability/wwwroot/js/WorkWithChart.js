@@ -3,29 +3,28 @@
 	google.charts.load('current', { 'packages': ['corechart'] });
 	google.charts.setOnLoadCallback(drawChart);
 	function drawChart() {
-		var data = google.visualization.arrayToDataTable(
-			dataArr
-		);
+		var data = google.visualization.arrayToDataTable(dataArr);
 
 		var options = {
-			title: 'График',
+            pointSize: 5,
+            chartArea: { 'width': '90%'},
+            legend: { position: 'none' },
 			hAxis: {
-				title: dataArr[0][0], titleTextStyle: { color: '#333' },
-				slantedText: true, slantedTextAngle: 80
+				title: dataArr[0][0]
 			},
 			vAxis: {
-				title: "Значение",
-				minValue: 0
+                title: dataArr[0][1]
 			},
 			explorer: {
-				actions: ['dragToZoom', 'rightClickToReset'],
+                actions: ['dragToZoom', 'rightClickToReset'],
 				axis: 'horizontal',
 				keepInBounds: true,
-				maxZoomIn: 4.0
+                maxZoomIn: 5,
+                maxZoomOut: 5,
 			},
             colors: ['#1b6ec2'],
 			width: $(window).width(),
-			height: $(window).height() * 0.7
+			height: $(window).height()*0.8
 		};
 
         var chart = new google.visualization.AreaChart(document.getElementById('map_canvas'));
@@ -33,6 +32,6 @@
 	}
 }
 
-//$(window).resize(function () {
-//    showChart2();
-//});
+$(window).resize(function () {
+    showChart2();
+});

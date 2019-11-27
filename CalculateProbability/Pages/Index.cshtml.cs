@@ -26,7 +26,7 @@ namespace CalculateProbability.Pages
         public ActionResult OnPostGetData(string ParametrName,double From, double To, double CountDote, double Tn,double T0, double S, double F, double Fv, double Eps )
         {
         Dictionary<string, object> Data = new Dictionary<string, object>();
-        Data.Add("Names", new string[] { "P", "Tn" });
+        Data.Add("Names", new string[] { "Tn", "P" });
         Data.Add("Data", data);
         var result = JsonConvert.SerializeObject(Data);
         return new JsonResult(result);
