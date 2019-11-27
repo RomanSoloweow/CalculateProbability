@@ -25,7 +25,7 @@
 			},
 			colors: ['#D44E41'],
 			width: $(window).width(),
-			height: $(window).height() * 0.7
+			height: $(window).height()
 		};
 		
 		var chart = new google.visualization.LineChart(document.getElementById('canvas'));
