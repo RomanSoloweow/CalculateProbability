@@ -1,79 +1,37 @@
-﻿function resetZoom() {
-    window.myLine.resetZoom();
-}
+﻿function showChart2() {
+	google.charts.load('current', { 'packages': ['corechart'] });
+	google.charts.setOnLoadCallback(drawChart);
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable([
+			['Year', 'Sales'],
+			[1, 1],
+			[2, 2],
+			[3, 4],
+			[4, 2]
+		]);
 
-let config = {
-    type: 'line',
-    datasets: [{
-    }],
+		var options = {
+			title: 'График',
+			hAxis: {
+				title: 'Year', titleTextStyle: { color: '#333' },
+				slantedText: true, slantedTextAngle: 80
+			},
+			vAxis: {
+				title: "Month",
+				minValue: 0
+			},
+			explorer: {
+				actions: ['dragToZoom', 'rightClickToReset'],
+				axis: 'horizontal',
+				keepInBounds: true,
+				maxZoomIn: 4.0
+			},
+			colors: ['#D44E41'],
+			width: $(window).width() * 0.8,
+			height: $(window).height() * 0.8
+		};
 
-    options: {
-        legend: {
-            display: true,
-            position: 'top',
-            labels: {
-                boxWidth: 80,
-                fontColor: 'black'
-            }
-        },
-        scales: {
-            xAxes: [
-                {
-                    scaleLabel: {
-                        display: true
-                    }
-                }
-            ],
-            yAxes: [
-                {
-                    scaleLabel: {
-                        display: true,
-                        labelString: "Значение"
-                    }
-                }
-            ]
-        },
-        pan: {
-            enabled: true,
-            mode: 'xy',
-            speed: 1
-        },
-        zoom: {
-            enabled: true,
-            drag: false,
-            mode: 'xy',
-            speed: 0.01
-        }
-    }
-
-};
-
-window.onload = function () {
-    var ctx = document.getElementById("canvas");
-    window.myLine = new Chart(ctx, config);
-};
-
-function ShowChart()
-{
-    color = "27,110,194"
-    dataArr =
-     [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    ]
-    config.data = {
-        labels: dataArr[0],
-        datasets: [{
-            label: "График",
-            data: dataArr[1],
-            borderColor: "rgb( "+color+")",
-            backgroundColor: "rgb( " + color + ",0.5)",
-            pointBorderColor: "rgb( " + color + ")",
-            pointBackgroundColor: "rgb( " + color + ")",
-            pointBorderWidth: 1,
-            fill: true
-        }]
-    }
-    config.options.scales.xAxes[0].scaleLabel.labelString = "new Data"
-    window.myLine.update();
+		var chart = new google.visualization.LineChart(document.getElementById('canvas'));
+		chart.draw(data, options);
+	}
 }
