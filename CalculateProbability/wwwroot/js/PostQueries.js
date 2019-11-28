@@ -55,5 +55,5 @@ function GetData()
 
 $(document).ready(function () {
 	if (sessionStorage.getItem('data'))
-		showChart2(JSON.pasre(sessionStorage.getItem('data')));
+		showChart2(JSON.parse(sessionStorage.getItem('data')));
 });
