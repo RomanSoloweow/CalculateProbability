@@ -50,13 +50,8 @@ function GetData()
             resDataObj.push(item)
         });
 
-        localStorage.data = JSON.stringify(resDataObj);
+        //localStorage.data = JSON.stringify(resDataObj);
     });
 
 
 }
-
-$(window).resize(function () {
-	let data = JSON.parse(localStorage.data);
-	showChart2(data);
-});

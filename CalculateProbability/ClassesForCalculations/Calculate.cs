@@ -20,7 +20,7 @@ namespace CalculateProbability
         /// <summary>
         /// Выбранный параметр
         /// </summary>
-        public string ParameterSelect;
+        public string SelectedParameterName;
         /// <summary>
         /// Начальное значение этого параметра
         /// </summary>
@@ -40,14 +40,14 @@ namespace CalculateProbability
         public double Fv;
         public double Eps;
         public double[] P;
-        public double[] Parameter;
+        public double[] ParameterValues;
         private BackgroundWorker CalculationBW = new BackgroundWorker();
         public bool isCalculate = false;
         public void StartCalculate()
         {   
             if (isCalculate)
                 return;
-            Parameter = new double[CountDots];
+            ParameterValues = new double[CountDots];
             P = new double[CountDots];
             CalculationBW.RunWorkerAsync();
             Console.WriteLine("Нажмите Enter в течении следующих пяти секунд, чтобы прервать работу");
@@ -60,7 +60,7 @@ namespace CalculateProbability
             {
                 CurentValue += step;                
                 SetForParametr(CurentValue);
-                Parameter[i]=CurentValue;
+                ParameterValues[i]=CurentValue;
                 if (CalculationBW.CancellationPending)
                 {
                     e.Cancel = true;
@@ -103,7 +103,7 @@ namespace CalculateProbability
             {
                 return false;
             }
-            ParameterSelect = _ParameterSelect;
+            SelectedParameterName = _ParameterSelect;
             From = _From;
             To = _To;
             CountDots = _CountDots;
@@ -117,7 +117,7 @@ namespace CalculateProbability
         }
         private void SetForParametr(double value)
         {
-            switch(ParameterSelect)
+            switch(SelectedParameterName)
             {
                 case "Tn":
                     {

@@ -1,4 +1,4 @@
-﻿
+﻿@using Newtonsoft.Json;
 @model Calculate
     <script src="~/js/WorkWithParameters.js"></script>
 <div class="collapse" id="CollapsParameters">
@@ -14,7 +14,7 @@
                     <option />
                     @foreach (var parameter in Model.GetParametersForSelect().Keys)
                     {
-                        <option selected=@(Model.ParameterSelect==parameter)>@parameter</option>
+                        <option selected=@(Model.SelectedParameterName==parameter)>@parameter</option>
                     }
                 </select>
             </div>
@@ -49,7 +49,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">@parameter.Key</span>
                             </div>
-                            <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" disabled="@(parameter.Key==Model.ParameterSelect)">
+                            <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" disabled="@(parameter.Key==Model.SelectedParameterName)">
                         </div>
                     </div>
                 }
@@ -57,3 +57,19 @@
         </div>
     </div>
 </div>
+<script>
+    window.onload = function ()
+    {
+        @{ 
+
+            //string Names = JsonConvert.SerializeObject(new string[] {Model.SelectedParameterName});
+            string P = JsonConvert.SerializeObject(Model.P);
+            string ParameterValues = JsonConvert.SerializeObject(Model.ParameterValues);
+
+        }
+        
+        sessionStorage["Names"] = "["+"@Model.SelectedParameterName" +", P]";
+        sessionStorage["P"] =  "@P";
+        sessionStorage["@Model.SelectedParameterName"] = "@ParameterValues";
+    };
+</script>

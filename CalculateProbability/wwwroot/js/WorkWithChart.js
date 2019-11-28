@@ -32,6 +32,8 @@
 	}
 }
 
-$(window).resize(function () {
-    showChart2();
+$(window).resize(function ()
+{
+    let data = JSON.parse(localStorage.data);
+    //showChart2(data);
 });
