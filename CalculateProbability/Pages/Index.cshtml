@@ -14,18 +14,8 @@
     </div>
 </div>
 
-@*<header class="navbar navbar-light bg-light fixed-top">
-    <button class="navbar-toggler" type="button" data-toggle="offcanvas" data-target="#myNavmenu" data-canvas="body">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</header>
-<nav id="myNavmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas" role="navigation">
-    <h1>Test</h1>
-</nav>*@
-
-
 @section Parameters
 {
-    <partial name="Parameters.cshtml" />
+    <partial name="Parameters.cshtml" model=Model.calculate />
     <partial name="Chart.cshtml" />
 }

@@ -1,61 +1,59 @@
-﻿@{ 
-
-    List<string> parametersForSelect = new List<string> { "Tn", "T0", "S", "F", "Fv"};
-    List<string> parameters = new List<string>(parametersForSelect) { "Eps" };
-}
+﻿
+@model Calculate
+    <script src="~/js/WorkWithParameters.js"></script>
 <div class="collapse" id="CollapsParameters">
-        <div class="col col-lg-3">
-            <div class="form-group">
-                <div class="input-group ">
+    <div class="col col-lg-3">
+        <div class="form-group">
+            <div class="input-group ">
+                <div class="input-group-prepend">
                     <div class="input-group-prepend">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Параметр</span>
-                        </div>
-                    </div>
-                    <select id="paramName" class="form-control" id="ParameterSelect">
-                        <option />
-                        @foreach (var parameter in parametersForSelect)
-                        {
-                            <option>@parameter</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">От</span>
-                        </div>
-                        <input id="from" type="number" class="form-control">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">До</span>
-                        </div>
-                        <input id="to" type="number" class="form-control">
+                        <span class="input-group-text">Параметр</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Количество точек</span>
-                        </div>
-                        <input id="dotsCount" type="number" class="form-control">
-                    </div>
-                </div>
-                @{
-
-                    foreach (var parameter in parameters)
+                <select class="form-control" id="ParameterSelect" onchange="ChangeSelect(this)">
+                    <option />
+                    @foreach (var parameter in Model.GetParametersForSelect().Keys)
                     {
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">@parameter</span>
-                                </div>
-                                <input id=@parameter type="number" class="form-control">
-                            </div>
-                        </div>
+                        <option selected=@(Model.ParameterSelect==parameter)>@parameter</option>
                     }
-                }
+                </select>
             </div>
         </div>
+        <div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">От</span>
+                    </div>
+                    <input id="From" type="number" class="form-control" value="@Model.From">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">До</span>
+                    </div>
+                    <input id="To" type="number" class="form-control" value="@Model.To">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Количество точек</span>
+                    </div>
+                    <input id="CountDots" type="number" class="form-control" value="@Model.CountDots">
+                </div>
+            </div>
+            @{
+
+                foreach (var parameter in Model.GetParameters())
+                {
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">@parameter.Key</span>
+                            </div>
+                            <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" disabled="@(parameter.Key==Model.ParameterSelect)">
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 </div>

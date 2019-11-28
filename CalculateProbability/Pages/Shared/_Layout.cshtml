@@ -23,19 +23,9 @@
     @Html.AntiForgeryToken()
     <div class="container">
         <main role="main" class="pb-3">
-            @{
-                WorkWithExcel.Open();
-
-            }
-
             @RenderBody()
-
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        @*<a class="navbar-brand" asp-area="" asp-page="/Privacy">test</a>*@
-    </footer>
 
 
 
