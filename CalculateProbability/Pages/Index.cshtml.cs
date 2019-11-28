@@ -37,11 +37,14 @@ namespace CalculateProbability.Pages
             }
             else
             {
-                calculate.StartCalculate();           
                 Data.Add("Names", new string[] { ParameterName, "P" });
-                Data.Add("ParameterName", calculate.Parameter.ToArray());
-                Data.Add("P", calculate.P.ToArray());
-                SaveCalculate();
+                Data.Add("ParameterName", new double[] { 6, 10, 6, 4, 3, 9, 7, 10, 9, 7 }); 
+                Data.Add("P", new double[] { 1, 4, 7, 10, 7, 3, 4, 2, 4, 1 });
+                //calculate.StartCalculate();           
+                //Data.Add("Names", new string[] { ParameterName, "P" });
+                //Data.Add("ParameterName", calculate.Parameter.ToArray());
+                //Data.Add("P", calculate.P.ToArray());
+                //SaveCalculate();
             }
       
             var result = JsonConvert.SerializeObject(Data);
