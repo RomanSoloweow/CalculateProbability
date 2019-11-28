@@ -21,7 +21,7 @@
         }
     });
     return JSON.parse(result);
-}
+};
 
 function GetData()
 {
@@ -38,22 +38,15 @@ function GetData()
 		Fv: $("#Fv").val(),
 		Eps: $("#Eps").val()
 	};
-	var Result = Post("GetData", Data);
+	let Result = Post("GetData", Data);
 	Result.Data.unshift(Result.Names);
-	resData = Result.Data;
+	let resData = Result.Data;
 	showChart2(resData);
-	
-	resDataObj = [];
-	resData.forEach(function (item) {
-		tempObj = { x: item[0], y: item[1]};
-		resDataObj.push(item)
-	});
-
-	localStorage.data = JSON.stringify(resDataObj);
-
-}
+	sessionStorage.data = JSON.stringify(resData);
+};
 
 $(window).resize(function () {
-	let data = JSON.parse(localStorage.data);
-	showChart2(data);
+	let resData = JSON.parse(sessionStorage.data);
+	if (resData)
+		showChart2(resData);
 });
