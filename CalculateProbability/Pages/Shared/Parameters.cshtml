@@ -60,16 +60,16 @@
 <script>
     window.onload = function ()
     {
-        @{ 
+        @{
 
             //string Names = JsonConvert.SerializeObject(new string[] {Model.SelectedParameterName});
             string P = JsonConvert.SerializeObject(Model.P);
             string ParameterValues = JsonConvert.SerializeObject(Model.ParameterValues);
 
         }
-        
+
         sessionStorage["Names"] = "["+"@Model.SelectedParameterName" +", P]";
         sessionStorage["P"] =  "@P";
-        sessionStorage["@Model.SelectedParameterName"] = "@ParameterValues";
+        sessionStorage["ParameterValues"] = "@ParameterValues";
     };
 </script>

@@ -36,13 +36,13 @@ namespace CalculateProbability.Pages
             Dictionary<string, object> Data = new Dictionary<string, object>();
             if (calculate.Set( ParameterName,  From, To, CountDote, Tn, T0, S, F, Fv, Eps))
             {
-                Data.Add("Error", "Не заполнены параметры");
+                Data.Add("ErrorMessage", "Не заполнены параметры");
             }
             else
             {
                 //calculate.StartCalculate();           
                 Data.Add("Names", new string[] { ParameterName, "P" });
-                Data.Add("ParameterName", calculate.ParameterValues.ToArray());
+                Data.Add("ParameterValues", calculate.ParameterValues.ToArray());
                 Data.Add("P", calculate.P.ToArray());
                 //SaveCalculate();
             }
