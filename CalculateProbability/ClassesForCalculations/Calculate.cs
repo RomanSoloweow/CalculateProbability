@@ -96,13 +96,9 @@ namespace CalculateProbability
         }
         public bool Set(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
         {
-            if(string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) ||
-               string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) ||
-               string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) || string.IsNullOrEmpty(_ParameterSelect) ||
-               string.IsNullOrEmpty(_ParameterSelect))
-            {
+            if (!Check(_ParameterSelect, _From, _To, _CountDots, _Tn, _T0, _S, _F, _Fv, _Eps))
                 return false;
-            }
+
             SelectedParameterName = _ParameterSelect;
             From = _From;
             To = _To;
@@ -113,6 +109,17 @@ namespace CalculateProbability
             F = _F;
             Fv = _Fv;
             Eps = _Eps;
+            return true;
+        }
+        private bool Check(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
+        {
+            if (string.IsNullOrEmpty(_ParameterSelect))
+                return false;
+            if (_From> _To)
+                return false;
+            if(_CountDots<1)
+                return false;
+
             return true;
         }
         private void SetForParametr(double value)
