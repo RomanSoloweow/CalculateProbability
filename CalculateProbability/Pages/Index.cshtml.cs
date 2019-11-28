@@ -34,18 +34,18 @@ namespace CalculateProbability.Pages
         public ActionResult OnPostGetData(string ParameterName,double From, double To, int CountDote, double Tn,double T0, int S, double F, double Fv, double Eps)
         {
             Dictionary<string, object> Data = new Dictionary<string, object>();
-            if (calculate.Set( ParameterName,  From, To, CountDote, Tn, T0, S, F, Fv, Eps))
-            {
-                Data.Add("ErrorMessage", "Не заполнены параметры");
-            }
-            else
-            {
+            //if (calculate.Set( ParameterName,  From, To, CountDote, Tn, T0, S, F, Fv, Eps))
+            //{
+            //    Data.Add("ErrorMessage", "Не заполнены параметры");
+            //}
+            //else
+            //{
                 //calculate.StartCalculate();           
                 Data.Add("Names", new string[] { ParameterName, "P" });
                 Data.Add("ParameterValues", calculate.ParameterValues.ToArray());
                 Data.Add("P", calculate.P.ToArray());
                 //SaveCalculate();
-            }
+            //}
       
             var result = JsonConvert.SerializeObject(Data);
             return new JsonResult(result);
