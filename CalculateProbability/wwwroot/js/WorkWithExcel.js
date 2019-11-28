@@ -30,7 +30,6 @@ $('#file').change(function (e) {
 			resultArr.push(tempArr);
 		});
 		showChart2(resultArr);
-		console.log(resultArr);
 		sessionStorage.data = JSON.stringify(resultArr);
 	}
 });

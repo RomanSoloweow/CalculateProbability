@@ -37,7 +37,6 @@ function GetData()
 		Fv: $("#Fv").val(),
 		Eps: $("#Eps").val()
 	};
-	console.log(Data);
     Post("GetData", Data, function (Result)
 	{
 		if (Result.ErrorMessage)
