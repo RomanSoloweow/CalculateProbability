@@ -34,6 +34,6 @@
 
 $(window).resize(function ()
 {
-    let data = JSON.parse(localStorage.data);
-    //showChart2(data);
+	let data = JSON.parse(sessionStorage.data);
+    showChart2(data);
 });

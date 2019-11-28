@@ -37,21 +37,24 @@ function GetData()
 		Fv: $("#Fv").val(),
 		Eps: $("#Eps").val()
 	};
+	console.log(Data);
     Post("GetData", Data, function (Result)
-    {
-        Result.Data.unshift(Result.Names);
-        resData = Result.Data;
-        showChart2(resData);
-
-        resDataObj = [];
-        resData.forEach(function (item)
-        {
-            tempObj = { x: item[0], y: item[1] };
-            resDataObj.push(item)
-        });
-
-        //localStorage.data = JSON.stringify(resDataObj);
+	{
+		if (Result.ErrorMessage)
+			alert(Result.ErrorMessage)
+		else {
+			ResultArr = [];
+			ResultArr.push(Result.Names);
+			$.each(Result.ParameterValues, function (index, item) {
+				ResultArr.push([Result.ParameterValues[index], Result.P[index]]);
+			});
+			showChart2(ResultArr);
+			sessionStorage.data = JSON.stringify(ResultArr);
+		}
     });
-
-
 }
+
+$(document).ready(function () {
+	if (sessionStorage.getItem('data'))
+		showChart2(JSON.pasre(sessionStorage.getItem('data')));
+});
