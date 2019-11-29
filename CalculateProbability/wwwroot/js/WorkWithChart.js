@@ -1,52 +1,9 @@
-﻿//function showChart2(dataArr) {
-
-//	google.charts.load('current', { 'packages': ['corechart'] });
-//	google.charts.setOnLoadCallback(drawChart);
-//	function drawChart() {
-//        var data = google.visualization.arrayToDataTable(dataArr);
-//		var options = {
-//            pointSize: 5,
-//            chartArea: { 'width': '90%'},
-//            legend: { position: 'none' },
-//			hAxis: {
-//                title: dataArr[0][0]
-//			},
-//			vAxis: {
-//                title: dataArr[0][1]
-//			},
-//			explorer: {
-//                actions: ['dragToZoom', 'rightClickToReset'],
-//				axis: 'horizontal',
-//				keepInBounds: true,
-//                maxZoomIn:5
-//			},
-//            colors: ['#1b6ec2'],
-//			width: $(window).width(),
-//			height: $(window).height()*0.8
-//		};
-
-//        var chart = new google.visualization.AreaChart(document.getElementById('map_canvas'));
-//		chart.draw(data, options);
-//	}
-//}
-
-//$(window).resize(function ()
-//{
-//    let data = JSON.parse(sessionStorage.data);
-//    if(data)
-//    showChart2(data);
-//});
-//$(document).ready(function ()
-//{
-//    var data = sessionStorage.getItem('data');
-//    if (data)
-//     showChart2(JSON.parse(data));
-//});
-
-function resetZoom() {
+﻿//функция для сброса масштабирования графика
+function resetZoom()
+{
     window.myLine.resetZoom();
 }
-
+//настройки для графика
 let config =
 {
     type: 'line',
@@ -64,23 +21,19 @@ let config =
         },
         scales: {
             xAxes:
-                [
+                [{
+                    scaleLabel:
                     {
-                        scaleLabel:
-                        {
-                            display: true
-                        }
+                        display: true
                     }
-                ],
+                 }],
             yAxes:
-                [
+                [{
+                    scaleLabel:
                     {
-                        scaleLabel:
-                        {
-                            display: true
-                        }
+                        display: true
                     }
-                ]
+                 }]
         },
         pan:
         {
@@ -103,19 +56,22 @@ window.onload = function ()
     var ctx = document.getElementById("canvas");
     window.myLine = new Chart(ctx, config);
 
-    var Names = sessionStorage.getItem('Names');
-    if (Names) {
-        var P = sessionStorage.getItem('P');
-        var ParameterValues = sessionStorage.getItem('ParameterValues');
-        showChart2(JSON.parse(Names), JSON.parse(ParameterValues), JSON.parse(P));
-    }
+    var result = this.GetObjFromStorage();
+    if (result == null)
+        return;
+
+    result = this.ObjFromJson(result);
+    showChart2(result);
 };
-function showChart2(Names, ParameterValues, P) {
+//Функция показать график
+function showChart2(Result)
+{
+
     color = "27,110,194"
     config.data = {
-        labels: ParameterValues,
+        labels: Result[Result.ParameterSelect],
         datasets: [{
-            data: P,
+            data: Result.P,
             borderColor: "rgb( " + color + ")",
             backgroundColor: "rgb( " + color + ",0.5)",
             pointBorderColor: "rgb( " + color + ")",
@@ -124,7 +80,7 @@ function showChart2(Names, ParameterValues, P) {
             fill: true
         }]
     }
-    config.options.scales.yAxes[0].scaleLabel.labelString = Names[1]
-    config.options.scales.xAxes[0].scaleLabel.labelString = Names[0]
+    config.options.scales.yAxes[0].scaleLabel.labelString = "P";
+    config.options.scales.xAxes[0].scaleLabel.labelString = Result.ParameterSelect;
     window.myLine.update();
 };

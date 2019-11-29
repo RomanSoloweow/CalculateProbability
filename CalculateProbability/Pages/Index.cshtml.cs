@@ -27,19 +27,19 @@ namespace CalculateProbability.Pages
         {
             GetCalculate();
         }
-        public ActionResult OnPostGetData(string ParameterName,double From, double To, int CountDote, double Tn,double T0, int S, double F, double Fv, double Eps)
+        public ActionResult OnPostGetData(string ParameterSelect, double From, double To, int CountDotes, double Tn,double T0, int S, double F, double Fv, double Eps)
         {
             Dictionary<string, object> Data = new Dictionary<string, object>();
-            string error = calculate.Set(ParameterName, From, To, CountDote, Tn, T0, S, F, Fv, Eps);
+            string error = calculate.Set(ParameterSelect, From, To, CountDotes, Tn, T0, S, F, Fv, Eps);
             if (!string.IsNullOrEmpty(error))
             {
                 Data.Add("ErrorMessage", error);
             }
             else
             {
-                 calculate.StartCalculate();  
-                Data.Add("Names", new string[] { ParameterName, "P" });
-                Data.Add("ParameterValues", calculate.ParameterValues.ToArray());
+                calculate.StartCalculate();  
+                Data.Add("ParameterSelect", ParameterSelect);
+                Data.Add(ParameterSelect, calculate.ParameterValues.ToArray());
                 Data.Add("P", calculate.P.ToArray());
                 SaveCalculate();
             }

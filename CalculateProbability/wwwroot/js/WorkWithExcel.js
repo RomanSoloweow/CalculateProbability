@@ -5,12 +5,14 @@ function uploadFile()
 	document.getElementById("file").click();
 };
 
-$('#file').change(function (e) {
-	var reader = new FileReader();
-    var Names = [];
-    var P = [];
-    var ParameterValues = [];
+$('#file').change(function (e)
+{
+    var reader = new FileReader();
     var file = e.target.files[0];
+
+    var Result = new Object;
+    Result.Names = [];
+
 	reader.readAsArrayBuffer(file);
     reader.onload = function (e)
     {
@@ -20,16 +22,26 @@ $('#file').change(function (e) {
 		let worksheet = wb.Sheets[first_sheet_name];
 		var my_data = XLSX.utils.sheet_to_json(worksheet, { raw: true })
 
-        Names = extractHeader(worksheet);
+        Result.Names = extractHeader(worksheet);
+        $.each(Result.Names, function (index, value)
+        {  
+            Result[value] = [];
+        });
         $.each(my_data, function (index, value) 
         {
-            P.push(value[Names[1]]);
-            ParameterValues.push(value[Names[0]]);
+            $.each(Result.Names, function (index, name)
+            {
+                var fild = value[name];
+                if (fild!=null)
+                    Result[name].push(fild);
+            });
         });
-        sessionStorage.Names = JSON.stringify(Names);
-        sessionStorage.P = JSON.stringify(P);
-        sessionStorage.ParameterValues = JSON.stringify(ParameterValues);
-        showChart2(Names, ParameterValues,P);
+
+
+        var objJson = ObjToJson(Result);
+        SaveObjToStorage(objJson);
+        
+        showChart2(Result);
      
 	}
 });
@@ -48,27 +60,46 @@ function extractHeader(ws)
 function downloadFile()
 {
    //Считываем данные
-    var Names = sessionStorage.getItem('Names');
-    if (Names) 
+    var Result = GetObjFromStorage();
+    if (Result == null) 
     {
-        var P = sessionStorage.getItem('P');
-        var ParameterValues = sessionStorage.getItem('ParameterValues');
-
-        Names = JSON.parse(Names);
-        P = JSON.parse(P);
-        ParameterValues = JSON.parse(ParameterValues);
+        ShowError("Данные для сохранения не найдены");
+        return;   
     }
     else
     {
-        ShowError("Данные для сохранения не найдены");
-        return;
+        Result = ObjFromJson(Result);
     }
+    var Data = new Array(Result.P.length+1);
+    var size = Parameters.length+1;
+    $.each(Data, function (index, value)
+    {
+        Data[index] = new Array(size);
+    });
 
-    //Формируем данные
-    Data = [];
-    Data.push(Names);
-    $.each(ParameterValues, function (index, item)
-    { Data.push([ParameterValues[index], P[index]]); });
+
+    Data[0][0] = Result.ParameterSelect[0];
+    Data[0][1] = "P";
+    var i = 2;
+    $.each(Parameters, function (index, value)
+    {
+        if (Result.ParameterSelect[0] != value)
+        {
+            Data[0][i] = value;
+            i++;
+        }
+        
+    });
+
+    $.each(Result, function (indexes, values)
+    {
+        var i = Data[0].indexOf(indexes);
+        $.each(values, function (index, value)
+        {
+            Data[index + 1][i]=value;
+        });
+    });
+
 
     //Создаем файл
 	var ws_name = "Calculations";
