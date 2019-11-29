@@ -1,0 +1,70 @@
+﻿@using Newtonsoft.Json;
+@model Calculate
+<script src="~/js/WorkWithParameters.js"></script>
+<script src="~/js/WorkWithErrors.js"></script>
+<script src="~/js/WorkWithStorage.js"></script>
+<div class="collapse" id="CollapsParameters">
+    <div class="col col-lg-3">
+        <div class="form-group">
+            <div class="input-group ">
+                <div class="input-group-prepend">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Параметр</span>
+                    </div>
+                </div>
+                <select class="form-control" id="ParameterSelect" onchange="ChangeSelect(this)">
+                    <option />
+                    @foreach (var parameter in Model.GetParametersForSelect().Keys)
+                    {
+                        <option selected=@(Model.SelectedParameterName==parameter)>@parameter</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">От</span>
+                    </div>
+                    <input id="From" type="number" class="form-control" value="@Model.From">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">До</span>
+                    </div>
+                    <input id="To" type="number" class="form-control" value="@Model.To">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Количество точек</span>
+                    </div>
+                    <input id="CountDotes" type="number" class="form-control" value="@Model.CountDots">
+                </div>
+            </div>
+            @{
+
+                foreach (var parameter in Model.GetParameters())
+                {
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">@parameter.Key</span>
+                            </div>
+                            @if (parameter.Key == Model.SelectedParameterName)
+                            {
+                                <input id="@parameter.Key" type="number" class="form-control" disabled>
+                            }
+                            else
+                            {
+                                <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value">
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+

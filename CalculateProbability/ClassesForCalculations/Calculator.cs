@@ -9,6 +9,7 @@ namespace CalculateProbability
 {
     public class Calculator : IDisposable
     {
+        private Functions functions;
         public delegate void MessageProgressDelegate(string message, int iteration);
         public delegate void MessageErrorDelegate(string message);
         public delegate void CaclulationDelegate(double value);
@@ -27,6 +28,8 @@ namespace CalculateProbability
         private int N_MAX = 6000;
         public double CurrentP = 0.0;
         private bool isRuning = false;
+
+        public string Error;
         public bool IsRuning
         {
             private set { isRuning = value; }
@@ -35,8 +38,9 @@ namespace CalculateProbability
         private CancellationTokenSource cancelTokenSource;
         private CancellationToken token;
 
-        public Calculator(int S, double EPS, double T0, double Tn, int N)
+        public Calculator(double F, double Fv, int S, double EPS, double T0, double Tn, int N)
         {
+            functions = new Functions(F,Fv);
             this.S = S;
             this.EPS = EPS;
             this.Tn = Tn;
@@ -50,25 +54,30 @@ namespace CalculateProbability
             string text = "Tn = " + Tn.ToString() + ";\n" + Environment.NewLine +
             "To = " + T0.ToString() + ";\n" + Environment.NewLine +
             "S = " + S.ToString() + ";\n" + Environment.NewLine +
-            "Lambda(F) = " + Functions.Lambda.ToString() + ";\n" + Environment.NewLine +
-            "Mu(Fv) = " + Functions.Mu.ToString() + ";\n" + Environment.NewLine +
+            "Lambda(F) = " + functions.Lambda.ToString() + ";\n" + Environment.NewLine +
+            "Mu(Fv) = " + functions.Mu.ToString() + ";\n" + Environment.NewLine +
             "EPS = " + EPS.ToString() + ";\n" + Environment.NewLine +
             "P(tn, to) = " + CurrentP.ToString() + ";\n";
             return text;
         }
-        public void CancelCalculation()
+        public void StopCalculation()
         {
-            if (cancelTokenSource != null)
+            if ((IsRuning) && (cancelTokenSource != null))
                 cancelTokenSource.Cancel();
         }
-        private void StopCalculation()
+        private void StopingCalculation()
         {
             IsRuning = false;
             cancelTokenSource.Cancel();
             if (OnProgress != null)
                 OnProgress("Reset", 0);
         }
-        public void RunCalculation()
+        private void Progress(string str, int i)
+        {
+            if (OnProgress != null)
+                OnProgress(str, i);
+        }
+        public double RunCalculation()
         {
             try
             {
@@ -77,8 +86,6 @@ namespace CalculateProbability
                 double r = 0.0;
                 CurrentP = 0.0;
                 IsRuning = true;
-                Task task = new Task(() =>
-                {
                     do
                     {
                         Prepare();
@@ -86,24 +93,22 @@ namespace CalculateProbability
                         {
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
-                                return;
+                                StopingCalculation();
+                                 break;
                             }
                             ConvolutionP(i);
-                            if (OnProgress != null)
-                                OnProgress("Iteration", i);
+                            Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
-                                return;
+                                StopingCalculation();
+                                  break;
                             }
                             ConvolutionFv(i);
-                            if (OnProgress != null)
-                                OnProgress("Iteration", i);
+                            Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
-                                StopCalculation();
-                                return;
+                                StopingCalculation();
+                                  break;
                             }
                         }
                         double result = 0.0;
@@ -114,21 +119,17 @@ namespace CalculateProbability
                         r = Math.Abs(CurrentP - result) / Math.Abs(result);
                         N *= 2;
                         CurrentP = result;
-                        if (OnProgress != null)
-                            OnProgress("Reset", 0);
                     } while (r > EPS && N < N_MAX);
                     if (OnCalculation != null)
                         OnCalculation(CurrentP);
                     IsRuning = false;
-                });
-                task.Start();
             }
             catch (Exception ex)
             {
                 IsRuning = false;
-                if (OnError != null)
-                    OnError(ex.Message);
+                Error = ex.Message;
             }
+            return CurrentP;
         }
         private void Prepare()
         {
@@ -140,9 +141,9 @@ namespace CalculateProbability
             for (int i = 0; i <= N; i++) //по всем узлам сетки
             {
                 double ti = i * h;
-                double value = Functions.FunctionDF(ti);
+                double value = functions.FunctionDF(ti);
                 DFList.Add(value);
-                value = Functions.FunctionDFv(ti);
+                value = functions.FunctionDFv(ti);
                 DFvList.Add(value);
             }
         }
@@ -155,7 +156,7 @@ namespace CalculateProbability
                 for (int i = 0; i <= N; i++) //по всем узлам сетки
                 {
                     double ti = i * h;
-                    double value = 1 - Functions.FunctionF(ti);
+                    double value = 1 - functions.FunctionF(ti);
                     PList[0].Add(value);
                 }
             }
@@ -183,7 +184,7 @@ namespace CalculateProbability
                 for (int i = 0; i <= N; i++) //по всем узлам сетки
                 {
                     double ti = i * h;
-                    double value = Functions.FunctionFv(ti);
+                    double value = functions.FunctionFv(ti);
                     FvList[0].Add(value);
                 }
             }
@@ -206,5 +207,64 @@ namespace CalculateProbability
         {
             GC.SuppressFinalize(this);
         }
+
+        #region IntegralMethods
+        public double CalculatePkDF(int k, double Tbeg, double Tend, double eps, int N)
+        {
+            double integral = 0.0;
+            double current_integral = 0.0;
+            double h = (Tend - Tbeg) / N;
+            if (k == 1)
+                current_integral += (1.0 - functions.FunctionF(Tend - Tbeg)) * functions.FunctionDF(Tbeg) +
+                (1.0 - functions.FunctionF(Tend - Tend)) * functions.FunctionDF(Tend);
+            else
+                current_integral += CalculatePkDF(k - 1, Tbeg, Tend, eps, N) + CalculatePkDF(k - 1, Tbeg, Tend,
+                eps, N);
+            for (int i = 1; i <= N - 1; i++)
+            {
+                double ti = Tbeg + h * i;
+                double fi = 0.0;
+                if (k == 1)
+                    fi = (1.0 - functions.FunctionF(Tend - ti)) * functions.FunctionDF(ti);
+                else
+                    fi = CalculatePkDF(k - 1, Tbeg, Tend - ti, eps, N);
+                if (i % 2 == 0)
+                    fi *= 2;
+                else
+                    fi *= 4;
+                current_integral += fi;
+            }
+            current_integral = current_integral * h / 3.0;
+            integral = current_integral;
+            return integral;
+        }
+        public double CalculateFvkDFv(int k, double Tbeg, double Tend, double eps, int N)
+        {
+            double integral = 0.0;
+            double current_integral = 0.0;
+            double h = (Tend - Tbeg) / N;
+            if (k == 1)
+                current_integral += functions.FunctionFv(Tbeg) * functions.FunctionDFv(Tbeg) +
+                functions.FunctionFv(Tend - Tend) * functions.FunctionDFv(Tend);
+            else
+                current_integral += CalculateFvkDFv(k - 1, Tbeg, Tend, eps, N) + CalculateFvkDFv(k - 1, Tbeg,
+                Tend, eps, N);
+            for (int i = 1; i <= N - 1; i++)
+            {
+                double ti = Tbeg + h * i;
+                double fi = 0.0;
+                if (k == 1)
+                    fi = (1.0 - functions.FunctionFv(Tend - ti)) * functions.FunctionDFv(ti);
+                else
+                    fi = CalculateFvkDFv(k - 1, Tbeg, Tend - ti, eps, N);
+                if (i % 2 == 0) fi *= 2;
+                else fi *= 4;
+                current_integral += fi;
+            }
+            current_integral = current_integral * h / 3.0;
+            integral = current_integral;
+            return integral;
+        }
+        #endregion IntegralMethods
     }
 }

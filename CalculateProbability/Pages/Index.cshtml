@@ -1,10 +1,29 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Schedule";
 }
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Error" style="display:none;">
+        <strong>Ошибка: </strong><label id="ErrorText"></label>
+        <button type="button" class="close" aria-label="Close" onclick="CloseError();">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 
 <div class="text-center">
-    <h1 class="display-4">Здесь будут графики</h1>
-    <button type="button" class="btn btn-dark">Тестовая кнопка</button>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#CollapsParameters" aria-expanded="false" aria-controls="CollapsParameters">Параметры</button>
+        <button type="button" class="btn btn-primary" onclick="GetData();">Построить График</button>
+        <button type="button" class="btn btn-primary" onclick="resetZoom();">Сбросить масштаб</button>
+        @*<button type="button" class="btn btn-primary">Остановить вычисления</button>*@
+        <button type="button" class="btn btn-primary" onclick="uploadFile()">Загрузить</button>
+        <button type="button" class="btn btn-primary" onclick="downloadFile();">Сохранить</button>
+        <input type="file" id="file" style="display:none;" />
+    </div>
 </div>
+
+@section Parameters
+{
+    <partial name="Parameters.cshtml" model=Model.calculate />
+    <partial name="Chart.cshtml" />
+}
