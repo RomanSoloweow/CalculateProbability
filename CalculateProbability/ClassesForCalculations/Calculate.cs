@@ -55,13 +55,14 @@ namespace CalculateProbability
             ParameterValues = new double[CountDots];
             P = new double[CountDots];
             CalculationBW.RunWorkerAsync();
+            isCalculate = true;
             countdownEvent = new CountdownEvent(CountDots+1);
             countdownEvent.Wait();
             myStopwatch.Stop(); //остановить
+            isCalculate = false;
         }
         private void Calculation(object sender, DoWorkEventArgs e)
         {
-
             double step = (To - From) / CountDots;
                 double CurentValue = From - step;
                 for (int i = 0; i < CountDots; i++)
