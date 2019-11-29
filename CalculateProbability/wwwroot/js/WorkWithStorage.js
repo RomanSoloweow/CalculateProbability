@@ -13,7 +13,9 @@ function GetParametersObjFromForm()
     {
         if (value != ParameterSelect)
         {
-          ParametersFromForm[value] = $("#" + value).val();
+            var mass = [];
+            mass.push($("#" + value).val());
+            ParametersFromForm[value] = mass;
         }
     });
     return ParametersFromForm;
@@ -23,6 +25,7 @@ function GetParametersObjFromForm()
 function SaveParametersToStorage()
 {
     var obj = GetParametersObjFromForm();
+    obj = ObjToJson(obj);
     SaveObjToStorage(obj);
 }
 
@@ -52,9 +55,10 @@ function SaveObjToStorage(obj)
 
     for (var key in obj)
     {
-        var mass = [];
-        mass.push(obj[key]);
-        sessionStorage[key] = mass;
+        //var mass = [];
+        //mass.push(obj[key]);
+        //sessionStorage[key] = mass;
+        sessionStorage[key] = obj[key];
     }
 }
 
