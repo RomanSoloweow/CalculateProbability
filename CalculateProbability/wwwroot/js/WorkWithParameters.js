@@ -12,3 +12,6 @@
 
     }
 }
+$('#close').on('click', function () {
+    $('#divInfo').removeClass('show');
+});

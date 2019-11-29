@@ -41,18 +41,18 @@ function GetData()
 	{
         if (Result.ErrorMessage)
         {
-            $("#Error").addClass('show');
-            $("#ErrorText").text(Result.ErrorMessage);
-            
+            ShowError(Result.ErrorMessage);          
         }
-		else {
-			ResultArr = [];
-			ResultArr.push(Result.Names);
-			$.each(Result.ParameterValues, function (index, item) {
-				ResultArr.push([Result.ParameterValues[index], Result.P[index]]);
-			});
-			showChart2(ResultArr);
-			sessionStorage.data = JSON.stringify(ResultArr);
+        else {
+			//ResultArr = [];
+			//ResultArr.push(Result.Names);
+			//$.each(Result.ParameterValues, function (index, item) {
+			//	ResultArr.push([Result.ParameterValues[index], Result.P[index]]);
+			//});
+            showChart2(Result.Names,Result.ParameterValues, Result.P);
+            sessionStorage.Names = JSON.stringify(Result.Names);
+            sessionStorage.ParameterValues = JSON.stringify(Result.ParameterValues);
+            sessionStorage.P = JSON.stringify(Result.P);
 		}
     });
 }

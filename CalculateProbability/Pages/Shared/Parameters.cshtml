@@ -1,6 +1,7 @@
 ﻿@using Newtonsoft.Json;
 @model Calculate
-    <script src="~/js/WorkWithParameters.js"></script>
+<script src="~/js/WorkWithParameters.js"></script>
+<script src="~/js/WorkWithErrors.js"></script>
 <div class="collapse" id="CollapsParameters">
     <div class="col col-lg-3">
         <div class="form-group">
@@ -55,7 +56,7 @@
                             }
                             else
                             {
-                                <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" >
+                                <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value">
                             }
                         </div>
                     </div>
@@ -66,19 +67,15 @@
 </div>
 
 
-@*<script>
-    window.onload = function ()
-    {
-        @{
-
-            //string Names = JsonConvert.SerializeObject(new string[] {Model.SelectedParameterName});
-            string P = JsonConvert.SerializeObject(Model.P);
-            string ParameterValues = JsonConvert.SerializeObject(Model.ParameterValues);
-
-        }
-
-        //sessionStorage["Names"] = "["+"@Model.SelectedParameterName" +", P]";
-        //sessionStorage["P"] =  "@P";
-        //sessionStorage["ParameterValues"] = "@ParameterValues";
-    };
-</script>*@
+<script>
+        window.onload = function ()
+        {
+            @{
+                string P = JsonConvert.SerializeObject(Model.P);
+                string ParameterValues = JsonConvert.SerializeObject(Model.ParameterValues);
+            }
+            sessionStorage["Names"] = "["+"@Model.SelectedParameterName" +", P]";
+            sessionStorage["P"] =  "@P";
+            sessionStorage["ParameterValues"] = "@ParameterValues";
+        };
+    </script>

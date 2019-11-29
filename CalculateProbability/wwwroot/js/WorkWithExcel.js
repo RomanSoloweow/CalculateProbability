@@ -1,65 +1,79 @@
-﻿function uploadFile() {
+﻿
+
+function uploadFile()
+{
 	document.getElementById("file").click();
 };
 
 $('#file').change(function (e) {
 	var reader = new FileReader();
-	var xlsHeader;
-	var xlsRows;
-
-	reader.readAsArrayBuffer(e.target.files[0]);
-	reader.onload = function (e) {
+    var Names = [];
+    var P = [];
+    var ParameterValues = [];
+    var file = e.target.files[0];
+	reader.readAsArrayBuffer(file);
+    reader.onload = function (e)
+    {
 		var data = new Uint8Array(reader.result);
 		wb = XLSX.read(data, { type: 'array' });
-
 		let first_sheet_name = wb.SheetNames[0];
-
 		let worksheet = wb.Sheets[first_sheet_name];
 		var my_data = XLSX.utils.sheet_to_json(worksheet, { raw: true })
 
-		xlsHeader = extractHeader(worksheet);
-		xlsRows = my_data;
-
-		var resultArr = [];
-		resultArr.push(xlsHeader);
-		$.each(xlsRows, function (index, value) {
-			var tempArr = [];
-			$.each(value, function (ind, val) {
-				tempArr.push(Number(val));
-			});
-			resultArr.push(tempArr);
-		});
-		showChart2(resultArr);
-		sessionStorage.data = JSON.stringify(resultArr);
+        Names = extractHeader(worksheet);
+        $.each(my_data, function (index, value) 
+        {
+            P.push(value[Names[1]]);
+            ParameterValues.push(value[Names[0]]);
+        });
+        sessionStorage.Names = JSON.stringify(Names);
+        sessionStorage.P = JSON.stringify(P);
+        sessionStorage.ParameterValues = JSON.stringify(ParameterValues);
+        showChart2(Names, ParameterValues,P);
+     
 	}
 });
 
-function extractHeader(ws) {
+function extractHeader(ws)
+{
 	const header = []
 	const columnCount = XLSX.utils.decode_range(ws['!ref']).e.c + 1
-	for (let i = 0; i < columnCount; ++i) {
+    for (let i = 0; i < columnCount; ++i)
+    {
 		header[i] = ws[`${XLSX.utils.encode_col(i)}1`].v;
 	}
 	return header
 };
 
-function downloadFile() {
-	var data = JSON.parse(sessionStorage.data);
-	var xlsHeader = data[0];
-	data.shift();
-	var xlsRows = data;
-	var createXLSLFormatObj = [];
-	createXLSLFormatObj.push(xlsHeader);
-	$.each(xlsRows, function (index, value) {
-		var innerRowData = [];
-		$.each(value, function (ind, val) {
-			innerRowData.push(val);
-		});
-		createXLSLFormatObj.push(innerRowData);
-	});
+function downloadFile()
+{
+   //Считываем данные
+    var Names = sessionStorage.getItem('Names');
+    if (Names) 
+    {
+        var P = sessionStorage.getItem('P');
+        var ParameterValues = sessionStorage.getItem('ParameterValues');
+
+        Names = JSON.parse(Names);
+        P = JSON.parse(P);
+        ParameterValues = JSON.parse(ParameterValues);
+    }
+    else
+    {
+        ShowError("Данные для сохранения не найдены");
+        return;
+    }
+
+    //Формируем данные
+    Data = [];
+    Data.push(Names);
+    $.each(ParameterValues, function (index, item)
+    { Data.push([ParameterValues[index], P[index]]); });
+
+    //Создаем файл
 	var ws_name = "Calculations";
 	var wb_new = XLSX.utils.book_new()
-	var ws_new = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+    var ws_new = XLSX.utils.aoa_to_sheet(Data);
 
 	XLSX.utils.book_append_sheet(wb_new, ws_new, ws_name);
 	XLSX.writeFile(wb_new, "Calculations.xlsx");
