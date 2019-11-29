@@ -86,8 +86,6 @@ namespace CalculateProbability
                 double r = 0.0;
                 CurrentP = 0.0;
                 IsRuning = true;
-                Task task = new Task(() =>
-                {
                     do
                     {
                         Prepare();
@@ -96,21 +94,21 @@ namespace CalculateProbability
                             if (token.IsCancellationRequested)
                             {
                                 StopingCalculation();
-                                return;
+                                 break;
                             }
                             ConvolutionP(i);
                             Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
                                 StopingCalculation();
-                                return;
+                                  break;
                             }
                             ConvolutionFv(i);
                             Progress("Iteration", i);
                             if (token.IsCancellationRequested)
                             {
                                 StopingCalculation();
-                                return;
+                                  break;
                             }
                         }
                         double result = 0.0;
@@ -121,13 +119,10 @@ namespace CalculateProbability
                         r = Math.Abs(CurrentP - result) / Math.Abs(result);
                         N *= 2;
                         CurrentP = result;
-                        Progress("Reset", 0);
                     } while (r > EPS && N < N_MAX);
                     if (OnCalculation != null)
                         OnCalculation(CurrentP);
                     IsRuning = false;
-                });
-                task.Start();
             }
             catch (Exception ex)
             {

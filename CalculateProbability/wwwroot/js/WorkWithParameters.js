@@ -8,6 +8,7 @@
     var value = $(element).val();
     if (value)
     {
-        $("#" + value).attr('disabled', 'disabled');
+        $("#" + value).attr('disabled', 'disabled').val("");
+
     }
 }

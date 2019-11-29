@@ -39,8 +39,12 @@ function GetData()
 	};
     Post("GetData", Data, function (Result)
 	{
-		if (Result.ErrorMessage)
-			alert(Result.ErrorMessage)
+        if (Result.ErrorMessage)
+        {
+            $("#Error").addClass('show');
+            $("#ErrorText").text(Result.ErrorMessage);
+            
+        }
 		else {
 			ResultArr = [];
 			ResultArr.push(Result.Names);
@@ -53,7 +57,3 @@ function GetData()
     });
 }
 
-$(document).ready(function () {
-	if (sessionStorage.getItem('data'))
-		showChart2(JSON.parse(sessionStorage.getItem('data')));
-});

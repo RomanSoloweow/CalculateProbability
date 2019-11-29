@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CalculateProbability
 {
     
-    public class Calculate
+    public class Calculate : IDisposable
     {
         public Calculate()
         {
@@ -16,77 +17,86 @@ namespace CalculateProbability
             CalculationBW.WorkerSupportsCancellation = true;
             CalculationBW.DoWork += Calculation;
         }
-        public Random rnd = new Random();
         /// <summary>
         /// Выбранный параметр
         /// </summary>
-        public string SelectedParameterName;
+        public string SelectedParameterName="Tn";
         /// <summary>
         /// Начальное значение этого параметра
         /// </summary>
-        public double From=-5;
+        public double From = 20;
         /// <summary>
         /// Конечное значение этого параметра
         /// </summary>
-        public double To=5;
+        public double To=21;
         /// <summary>
         /// Количество точек этого параметра
         /// </summary>
-        public int CountDots;
+        public int CountDots=1;
         public double Tn;
-        public double T0;
-        public int S;
-        public double F;
-        public double Fv;
-        public double Eps;
+        public double T0=6;
+        public int S=4;
+        public double F=1;
+        public double Fv=2.5;
+        public double Eps = 0.01;
         public double[] P;
         public double[] ParameterValues;
+        [NonSerialized]
         private BackgroundWorker CalculationBW = new BackgroundWorker();
+        [NonSerialized]
+        public CountdownEvent countdownEvent;
         public bool isCalculate = false;
         public void StartCalculate()
-        {   
+        {
+            System.Diagnostics.Stopwatch myStopwatch = new System.Diagnostics.Stopwatch();
+            myStopwatch.Start(); //запуск
             if (isCalculate)
                 return;
             ParameterValues = new double[CountDots];
             P = new double[CountDots];
             CalculationBW.RunWorkerAsync();
-            Console.WriteLine("Нажмите Enter в течении следующих пяти секунд, чтобы прервать работу");
+            countdownEvent = new CountdownEvent(CountDots+1);
+            countdownEvent.Wait();
+            myStopwatch.Stop(); //остановить
         }
         private void Calculation(object sender, DoWorkEventArgs e)
-        {       
-            double step = (To - From) / CountDots;
-            double CurentValue = From - step;
-            for (int i = 0; i< CountDots; i++)
-            {
-                CurentValue += step;                
-                SetForParametr(CurentValue);
-                ParameterValues[i]=CurentValue;
-                if (CalculationBW.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
+        {
 
-                ThreadPool.QueueUserWorkItem(Сomputation, new Parametr 
+            double step = (To - From) / CountDots;
+                double CurentValue = From - step;
+                for (int i = 0; i < CountDots; i++)
                 {
-                    Index=i,
+                    CurentValue += step;
+                    SetForParametr(CurentValue);
+                    ParameterValues[i] = CurentValue;
+                ThreadPool.QueueUserWorkItem(new WaitCallback(Сomputation), new Parametr
+                {
+                    e = e,
+                    Index = i,
                     Tn = this.Tn,
-                    T0 = this.To,
+                    T0 = this.T0,
                     S = this.S,
                     F = this.F,
                     Fv = this.Fv,
                     Eps = this.Eps
 
                 });
-            }
+                }
+            countdownEvent.Signal();
         }
 
         private void Сomputation(object state)
         {
             Parametr parametr = (Parametr)state;
             Calculator calculator =   new Calculator(parametr.F, parametr.Fv, parametr.S, parametr.Eps, parametr.T0, parametr.Tn, 100);
+            if (CalculationBW.CancellationPending)
+            {
+                parametr.e.Cancel = true;
+                return;
+            }
             calculator.RunCalculation();
             P[parametr.Index] = calculator.CurrentP;
+            countdownEvent.Signal();
         }
 
         public void StopCalculate()
@@ -94,10 +104,11 @@ namespace CalculateProbability
             if (!isCalculate)
                 return;
         }
-        public bool Set(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
+        public string Set(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
         {
-            if (!Check(_ParameterSelect, _From, _To, _CountDots, _Tn, _T0, _S, _F, _Fv, _Eps))
-                return false;
+            string error = Check(_ParameterSelect, _From, _To, _CountDots, _Tn, _T0, _S, _F, _Fv, _Eps);
+            if (!string.IsNullOrEmpty(error))
+                return error;
 
             SelectedParameterName = _ParameterSelect;
             From = _From;
@@ -109,18 +120,18 @@ namespace CalculateProbability
             F = _F;
             Fv = _Fv;
             Eps = _Eps;
-            return true;
+            return "";
         }
-        private bool Check(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
+        private string Check(string _ParameterSelect, double _From, double _To, int _CountDots, double _Tn, double _T0, int _S, double _F, double _Fv, double _Eps)
         {
             if (string.IsNullOrEmpty(_ParameterSelect))
-                return false;
+                return "не выбран параметр";
             if (_From> _To)
-                return false;
+                return "левая граница не может быть выше правой";
             if(_CountDots<1)
-                return false;
+                return "количество точек должно быть больше 0";
 
-            return true;
+            return "";
         }
         private void SetForParametr(double value)
         {
@@ -168,6 +179,11 @@ namespace CalculateProbability
             Dictionary<string, double> Parameters = new Dictionary<string, double>(GetParametersForSelect());
             Parameters.Add("Eps", Eps);
             return Parameters;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

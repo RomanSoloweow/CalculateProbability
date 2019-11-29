@@ -49,7 +49,14 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">@parameter.Key</span>
                             </div>
-                            <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" disabled="@(parameter.Key==Model.SelectedParameterName)">
+                            @if (parameter.Key == Model.SelectedParameterName)
+                            {
+                                <input id="@parameter.Key" type="number" class="form-control" disabled>
+                            }
+                            else
+                            {
+                                <input id="@parameter.Key" type="number" class="form-control" value="@parameter.Value" >
+                            }
                         </div>
                     </div>
                 }
@@ -57,7 +64,9 @@
         </div>
     </div>
 </div>
-<script>
+
+
+@*<script>
     window.onload = function ()
     {
         @{
@@ -72,4 +81,4 @@
         //sessionStorage["P"] =  "@P";
         //sessionStorage["ParameterValues"] = "@ParameterValues";
     };
-</script>
+</script>*@
