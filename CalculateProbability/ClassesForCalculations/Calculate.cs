@@ -61,10 +61,11 @@ namespace CalculateProbability
                 Console.WriteLine("Расчет уже был запущен");
                 return;
             }
+            isCalculate = true;
             ParameterValues = new double[CountDots];
             P = new double[CountDots];
-            countdownEvent = new CountdownEvent(CountDots + 1);
-            CalculationBW.RunWorkerAsync();
+            countdownEvent = new CountdownEvent(CountDots + 1);       
+            CalculationBW.RunWorkerAsync();         
             Console.WriteLine("Расчет запущен");
             countdownEvent.Wait();
             Console.WriteLine("Расчет закончен");
@@ -72,7 +73,6 @@ namespace CalculateProbability
         }
         private void Calculation(object sender, DoWorkEventArgs e)
         {
-            isCalculate = true;
             double step = (To - From) / CountDots;
                 double CurentValue = From - step;
                 for (int i = 0; i < CountDots; i++)
