@@ -30,6 +30,13 @@ namespace CalculateProbability
         private bool isRuning = false;
 
         public string Error;
+        public bool HasError
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Error);
+            }
+        }
         public bool IsRuning
         {
             private set { isRuning = value; }

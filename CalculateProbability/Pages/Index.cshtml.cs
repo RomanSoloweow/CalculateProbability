@@ -27,23 +27,31 @@ namespace CalculateProbability.Pages
         {
             GetCalculate();
         }
-        public ActionResult OnPostGetData(string ParameterSelect, double From, double To, int CountDotes, double Tn,double T0, int S, double F, double Fv, double Eps)
+        public ActionResult OnPostGetData(string ParameterSelect=null, double? From = null, double? To = null, int? CountDotes = null, double? Tn = null, double? T0 = null, int? S = null, double? F = null, double? Fv = null, double? Eps = null)
         {
             Dictionary<string, object> Data = new Dictionary<string, object>();
-            string error = calculate.Set(ParameterSelect, From, To, CountDotes, Tn, T0, S, F, Fv, Eps);
+            string error = calculate.CheckAndSet(ParameterSelect, From, To, CountDotes, Tn, T0, S, F, Fv, Eps);
             if (!string.IsNullOrEmpty(error))
             {
                 Data.Add("ErrorMessage", error);
+                Console.WriteLine("Ошибка: "+ error);
             }
             else
             {
                 calculate.StartCalculate();  
-                Data.Add("ParameterSelect", ParameterSelect);
-                Data.Add(ParameterSelect, calculate.ParameterValues.ToArray());
-                Data.Add("P", calculate.P.ToArray());
-                SaveCalculate();
+                if(calculate.HasError)
+                {
+                    Console.WriteLine("Ошибка при расчетах: " + calculate.Error);
+                    Data.Add("ErrorMessage", calculate.Error);
+                }
+                else
+                {
+                    Data.Add("ParameterSelect", ParameterSelect);
+                    Data.Add(ParameterSelect, calculate.ParameterValues.ToArray());
+                    Data.Add("P", calculate.P.ToArray());
+                    SaveCalculate();
+                }                            
             }
-
             var result = JsonConvert.SerializeObject(Data);
             return new JsonResult(result);
         }
